@@ -1,12 +1,25 @@
+package Services;
+import DBConnections.DBConnection;
+import Entities.Merchant;
+import Entities.Payment;
+import Repositories.PaymentRepository;
 
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
-public class DataLoad {
+public class PaymentService {
+    DBConnection connectionToDB;
+    PaymentRepository pmntRepo;
 
-    public static void addPayments(Merchant merchant ) throws IOException, SQLException {
-        Connection con = Service.getConnection();
+    public PaymentService(DBConnection connectionToDB) {
+        this.connectionToDB = connectionToDB;
+    }
+
+    public void addPayments(Merchant merchant ) throws IOException, SQLException {
+        Connection con = connectionToDB.getConnection();
         double sum = 0;
         double charge = 0;
         for (Payment item: merchant.getPayments()) {
@@ -42,5 +55,4 @@ public class DataLoad {
         stmt1.close();
 
     }
-
 }

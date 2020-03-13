@@ -1,4 +1,5 @@
 import java.util.Comparator;
+import Entities.Merchant;
 
 public class SortByName implements Comparator<Merchant> {
 

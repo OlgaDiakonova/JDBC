@@ -1,3 +1,7 @@
+package Entities;
+
+import Entities.Customer;
+
 import java.time.LocalDate;
 
 public class Payment {
