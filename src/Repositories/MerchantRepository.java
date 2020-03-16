@@ -18,6 +18,8 @@ public class MerchantRepository {
     DBConnection connectionToDB;
     PaymentRepository pmntRepo;
 
+    // TODO: 2020-03-12 use pmntRepo 
+
     public MerchantRepository(DBConnection connectionToDB) {
         this.connectionToDB = connectionToDB;
     }

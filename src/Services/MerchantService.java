@@ -17,22 +17,24 @@ public class MerchantService {
         this.merchRepository = merchRepository;
     }
 
-    public Merchant addMerchantToDB(MerchantRepository mR, int id) throws SQLException {
+    public Merchant getMerchantById(int id) throws SQLException {
 
-        return mR.getMerchantById(id);
+        return merchRepository.getMerchantById(id);
     }
+
+    public List<Merchant> getMerchantList() throws SQLException {
+
+        return merchRepository.getMerchantList();
+    }
+
+    // TODO: 2020-03-12 return something from each method with void. Create methods to get everything from repos
 
     public void reportSortedMerchantList() {
 
         try{
-            List<Merchant> merchList = merchRepository.getMerchantList();
+            List<Merchant> merchList = getMerchantList();
 
-            Collections.sort(merchList, new Comparator<Merchant>() {
-                @Override
-                public int compare(Merchant o1, Merchant o2) {
-                    return o2.getName().compareTo(o1.getName());
-                }
-            });
+            Collections.sort(merchList, (o1, o2) -> o2.getName().compareTo(o1.getName()));
 
             for (Merchant item : merchList) {
 
@@ -47,7 +49,7 @@ public class MerchantService {
     public void sumReport(int merch) {
 
         try {
-            Merchant newMerch = merchRepository.getMerchantById(merch);
+            Merchant newMerch = getMerchantById(merch);
             displayReport(newMerch);
         } catch (SQLException e) {
             e.printStackTrace();

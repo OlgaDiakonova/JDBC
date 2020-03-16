@@ -20,7 +20,7 @@ public class CustomerRepository {
         this.connectionToDB = connectionToDB;
     }
 
-    public Customer getCustomerById(int custId) throws SQLException {
+    public Customer getById(int custId) throws SQLException {
 
         Customer cust = null;
         try (Connection con = connectionToDB.getConnection();

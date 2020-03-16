@@ -14,6 +14,8 @@ public class PaymentService {
     DBConnection connectionToDB;
     PaymentRepository pmntRepo;
 
+    // TODO: 2020-03-12 move addPayments to Repository and updateMerchant to Repository 
+
     public PaymentService(DBConnection connectionToDB) {
         this.connectionToDB = connectionToDB;
     }

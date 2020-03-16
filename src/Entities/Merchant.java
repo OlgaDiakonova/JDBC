@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 
-public class Merchant implements Comparator<Merchant> {
+public class Merchant  {
     private int id;
     private String name;
     private String bankName;
@@ -145,9 +145,5 @@ public class Merchant implements Comparator<Merchant> {
         this.lastSent = lastSent;
     }
 
-    @Override
-    public int compare(Merchant o1, Merchant o2) {
-        return o2.getName().compareTo(o1.getName());
-    }
 
 }

@@ -28,7 +28,7 @@ public class JDBCMain {
 
        LocalDate dt = LocalDate.now();
        Merchant merch = new MerchantRepository(new DBConnection()).getMerchantById(2);
-       Customer cust1 = new CustomerRepository(new DBConnection()).getCustomerById(3);
+       Customer cust1 = new CustomerRepository(new DBConnection()).getById(3);
        List<Payment> pmnt = new ArrayList<>();
        pmnt.add(new Payment(11, dt, merch, cust1,"Dell computer", 800.00, 0.00));
        pmnt.add(new Payment(12, dt, merch, cust1,"Microsoft Office", 500.00, 10.00));

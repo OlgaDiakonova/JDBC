@@ -43,7 +43,7 @@ public class PaymentRepository {
             while (resPmnt.next()) {
                 Integer id = resPmnt.getInt("id");
                 LocalDate dt = resPmnt.getDate("dt").toLocalDate();
-                Customer cust = new CustomerRepository(connectionToDB).getCustomerById(resPmnt.getInt("merchantId"));
+                Customer cust = new CustomerRepository(connectionToDB).getById(resPmnt.getInt("merchantId"));
                 String goods = resPmnt.getString("goods");
                 Double sumPaid = resPmnt.getDouble("sumPaid");
                 Double chargePaid = resPmnt.getDouble("chargePaid");
