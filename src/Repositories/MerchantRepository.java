@@ -20,8 +20,17 @@ public class MerchantRepository {
 
     // TODO: 2020-03-12 use pmntRepo 
 
-    public MerchantRepository(DBConnection connectionToDB) {
+    public PaymentRepository getPmntRepo() {
+        return pmntRepo;
+    }
+
+    public void setPmntRepo(PaymentRepository pmntRepo) {
+        this.pmntRepo = pmntRepo;
+    }
+
+    public MerchantRepository(DBConnection connectionToDB, PaymentRepository PaymnetRepo) {
         this.connectionToDB = connectionToDB;
+        this.pmntRepo = PaymnetRepo;
     }
 
     public Merchant getMerchantById(int merchId) throws SQLException {
@@ -49,7 +58,7 @@ public class MerchantRepository {
                 newMerch = new Merchant(id, nm, bankName, swift, account, charge, period, minSum, needToSend, sent, lastSent);
            }
 
-            List<Payment> pmntList = new PaymentRepository(connectionToDB).getPaymentByMerchant(newMerch);
+            List<Payment> pmntList = pmntRepo.getPaymentByMerchant(newMerch);
             newMerch.setPayments(pmntList);
 
         } catch (IOException e) {
@@ -82,6 +91,10 @@ public class MerchantRepository {
                 Double sent = resSet.getDouble("sent");
 
                 newMerch = new Merchant(id, nm, bankName, swift, account, charge, period, minSum, needToSend, sent, lastSent);
+
+                List<Payment> pmntList = pmntRepo.getPaymentByMerchant(newMerch);
+                newMerch.setPayments(pmntList);
+
                 merchantList.add(newMerch);
             }
 
