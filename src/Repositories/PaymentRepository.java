@@ -6,10 +6,7 @@ import Entities.Merchant;
 import Entities.Payment;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +70,7 @@ public class PaymentRepository {
             while (resPmnt.next()) {
                 Integer id = resPmnt.getInt("id");
                 LocalDate dt = resPmnt.getDate("dt").toLocalDate();
-                Merchant merch = new MerchantRepository(connectionToDB).getMerchantById(resPmnt.getInt("merchantId"));
+                Merchant merch = new MerchantRepository(connectionToDB, this).getMerchantById(resPmnt.getInt("merchantId"));
                 String goods = resPmnt.getString("goods");
                 Double sumPaid = resPmnt.getDouble("sumPaid");
                 Double chargePaid = resPmnt.getDouble("chargePaid");
@@ -86,5 +83,28 @@ public class PaymentRepository {
             e.printStackTrace();
         }
         return paymentList;
+    }
+
+    public void addPayment(List<Payment> payments) throws IOException, SQLException {
+
+        Connection con = connectionToDB.getConnection();
+        for (Payment item: payments) {
+
+            String sql = "INSERT INTO payment (id, dt, ";
+            sql += " merchantId, customerId, goods, sumPaid, chargePaid) values(?,?,?,?,?,?,?) ";
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setInt(1, item.getId());
+            stmt.setDate(2, java.sql.Date.valueOf(item.getDt()));
+            stmt.setInt(3, item.getMerchant().getId());
+            stmt.setInt(4, item.getCust().getId());
+            stmt.setString(5, item.getGoods());
+            stmt.setDouble(6, item.getSumPaid());
+            stmt.setDouble(7, item.getChargePaid());
+
+            stmt.executeUpdate();
+            stmt.close();
+
+        }
+
     }
 }

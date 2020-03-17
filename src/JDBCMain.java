@@ -4,6 +4,8 @@ import Entities.Payment;
 import Entities.Merchant;
 import Repositories.CustomerRepository;
 import Repositories.MerchantRepository;
+import Repositories.PaymentRepository;
+import Services.CustomerService;
 import Services.MerchantService;
 import Services.PaymentService;
 
@@ -17,24 +19,37 @@ public class JDBCMain {
 
     public static void main(String[] args) throws IOException, SQLException {
 
+        /*********************CREATING SERVICES AND REPOSITORIES**********************************/
+        PaymentRepository pmntRepo = new PaymentRepository(new DBConnection());
+        MerchantService newMerchService = new MerchantService(new MerchantRepository(new DBConnection(), pmntRepo));
+        PaymentService pmntService = new PaymentService(new DBConnection(), pmntRepo, newMerchService);
+        CustomerService newCustService = new CustomerService();
 
-       MerchantService newReport = new MerchantService(new MerchantRepository(new DBConnection()));
-       newReport.sumReport(1);
-       newReport.sumReport(2);
-       newReport.sumReport(3);
+        /*********************CREATING ENTITIES**********************************/
+        Merchant merch = newMerchService.getMerchantById(2);
+        Merchant merch1 = newMerchService.getMerchantById(3);
+        Customer cust1 = new CustomerRepository(new DBConnection()).getById(3);
 
-       MerchantService merchListReport = new MerchantService(new MerchantRepository(new DBConnection()));
-       merchListReport.reportSortedMerchantList();
+        /*********************TASK 1**********************************/
+        double totalSum = newMerchService.getTotalMerchantPaid(merch);
+        System.out.println("Total payment sum for merchant id " + 2 + " is " + totalSum);
+        double totalSum1 = newMerchService.getTotalMerchantPaid(merch1);
+        System.out.println("Total payment sum for merchant id " + 3 + " is " + totalSum1);
 
-       LocalDate dt = LocalDate.now();
-       Merchant merch = new MerchantRepository(new DBConnection()).getMerchantById(2);
-       Customer cust1 = new CustomerRepository(new DBConnection()).getById(3);
-       List<Payment> pmnt = new ArrayList<>();
-       pmnt.add(new Payment(11, dt, merch, cust1,"Dell computer", 800.00, 0.00));
-       pmnt.add(new Payment(12, dt, merch, cust1,"Microsoft Office", 500.00, 10.00));
-       merch.setPayments(pmnt);
-       PaymentService ps = new PaymentService(new DBConnection());
-       ps.addPayments(merch);
+        /*********************TASK 2**********************************/
+        List<Merchant> merchList = newMerchService.getSortedMerchantList();
+        for (Merchant item:merchList) {
+            System.out.println(item.toString());
+        }
+
+        /*********************TASK 3**********************************/
+        LocalDate dt = LocalDate.now();
+        List<Payment> pmnt = new ArrayList<>();
+        pmnt.add(new Payment(13, dt, merch, cust1, "Dell computer", 800.00, 0.00));
+        pmnt.add(new Payment(14, dt, merch, cust1, "Microsoft Office", 500.00, 10.00));
+        pmntService.addPayments(pmnt, merch);
+
+
 
     }
 

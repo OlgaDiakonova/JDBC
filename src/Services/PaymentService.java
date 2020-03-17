@@ -1,60 +1,56 @@
 package Services;
 import DBConnections.DBConnection;
+import Entities.Customer;
 import Entities.Merchant;
 import Entities.Payment;
 import Repositories.PaymentRepository;
-
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.LocalDate;
+import java.util.List;
+
 
 public class PaymentService {
     DBConnection connectionToDB;
     PaymentRepository pmntRepo;
+    MerchantService merchService;
 
-    // TODO: 2020-03-12 move addPayments to Repository and updateMerchant to Repository 
-
-    public PaymentService(DBConnection connectionToDB) {
+    public PaymentService(DBConnection connectionToDB, PaymentRepository paymentRepo,MerchantService merchService) {
         this.connectionToDB = connectionToDB;
+        this.pmntRepo = paymentRepo;
+        this.merchService = merchService;
     }
 
-    public void addPayments(Merchant merchant ) throws IOException, SQLException {
-        Connection con = connectionToDB.getConnection();
-        double sum = 0;
-        double charge = 0;
-        for (Payment item: merchant.getPayments()) {
+    public void addPayments(List<Payment> pmnts, Merchant merch)  {
 
-            String sql = "INSERT INTO payment (id, dt, ";
-            sql += " merchantId, customerId, goods, sumPaid, chargePaid) values(?,?,?,?,?,?,?) ";
-            PreparedStatement stmt = con.prepareStatement(sql);
-            stmt.setInt(1, item.getId());
-            stmt.setDate(2, java.sql.Date.valueOf(item.getDt()));
-            stmt.setInt(3, item.getMerchant().getId());
-            stmt.setInt(4, item.getCust().getId());
-            stmt.setString(5, item.getGoods());
-            stmt.setDouble(6, item.getSumPaid());
-            stmt.setDouble(7, item.getChargePaid());
+        // TODO: 2020-03-16 add transactions. fix exceptions
+        try {
+            pmntRepo.addPayment(pmnts);
 
-            sum += item.getSumPaid();
-            charge += item.getChargePaid();
+            double sum = 0;
+            double charge = 0;
 
-            stmt.executeUpdate();
-            stmt.close();
+            for (Payment item : pmnts) {
+                sum += item.getSumPaid();
+                charge += item.getChargePaid();
+            }
+            merchService.updateMerchant(merch, sum, charge);
 
+            merchService.sendFunds(merch);
+        }catch (IOException | SQLException e){
+            e.printStackTrace();
         }
 
-        sum += charge;
-
-        String sqlm = "UPDATE merchant set charge = ?, sent = ?, lastSent = ? where id = ? ";
-        PreparedStatement stmt1 = con.prepareStatement(sqlm);
-        stmt1.setInt(4, merchant.getId());
-        stmt1.setDouble(1, charge);
-        stmt1.setDouble(2, sum);
-        stmt1.setDate(3, java.sql.Date.valueOf(LocalDate.now()));
-        stmt1.executeUpdate();
-        stmt1.close();
-
     }
+
+    public List<Payment> getPaymnetsByMerchant(Merchant merch) throws SQLException {
+
+        return pmntRepo.getPaymentByMerchant(merch);
+    }
+
+    public List<Payment> getPaymentsByCustomer(Customer cust) throws SQLException {
+
+        return pmntRepo.getPaymentsListByCustomer(cust);
+    }
+
+
 }
