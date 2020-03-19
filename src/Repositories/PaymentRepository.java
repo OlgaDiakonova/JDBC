@@ -15,7 +15,7 @@ public class PaymentRepository {
 
     DBConnection connectionToDB;
 
-    public PaymentRepository(DBConnection connectionToDB) {
+    public PaymentRepository(DBConnection connectionToDB) throws SQLException {
         this.connectionToDB = connectionToDB;
     }
 
@@ -27,7 +27,7 @@ public class PaymentRepository {
         this.connectionToDB = connectionToDB;
     }
 
-    public List<Payment> getPaymentByMerchant(Merchant merch) throws SQLException {
+    public List<Payment> getPaymentByMerchant(Merchant merch)  {
 
         Payment newPayment = null;
         List<Payment> pmntList = new ArrayList<>();
@@ -51,13 +51,13 @@ public class PaymentRepository {
 
             }
 
-        } catch (IOException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
         return pmntList;
     }
 
-    public List<Payment> getPaymentsListByCustomer(Customer cust) throws SQLException {
+    public List<Payment> getPaymentsListByCustomer(Customer cust) {
 
         List<Payment> paymentList = new ArrayList();
         Payment payment = null;
@@ -79,32 +79,36 @@ public class PaymentRepository {
                 paymentList.add(payment);
             }
 
-        } catch (IOException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
         return paymentList;
     }
 
-    public void addPayment(List<Payment> payments) throws IOException, SQLException {
+    public void addPayment(List<Payment> payments) {
 
-        Connection con = connectionToDB.getConnection();
-        for (Payment item: payments) {
+        String sql = "INSERT INTO payment (id, dt, ";
+        sql += " merchantId, customerId, goods, sumPaid, chargePaid) values(?,?,?,?,?,?,?) ";
 
-            String sql = "INSERT INTO payment (id, dt, ";
-            sql += " merchantId, customerId, goods, sumPaid, chargePaid) values(?,?,?,?,?,?,?) ";
-            PreparedStatement stmt = con.prepareStatement(sql);
-            stmt.setInt(1, item.getId());
-            stmt.setDate(2, java.sql.Date.valueOf(item.getDt()));
-            stmt.setInt(3, item.getMerchant().getId());
-            stmt.setInt(4, item.getCust().getId());
-            stmt.setString(5, item.getGoods());
-            stmt.setDouble(6, item.getSumPaid());
-            stmt.setDouble(7, item.getChargePaid());
+        try (Connection con = connectionToDB.getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+            for (Payment item : payments) {
 
-            stmt.executeUpdate();
-            stmt.close();
+                stmt.setInt(1, item.getId());
+                stmt.setDate(2, java.sql.Date.valueOf(item.getDt()));
+                stmt.setInt(3, item.getMerchant().getId());
+                stmt.setInt(4, item.getCust().getId());
+                stmt.setString(5, item.getGoods());
+                stmt.setDouble(6, item.getSumPaid());
+                stmt.setDouble(7, item.getChargePaid());
 
+                stmt.executeUpdate();
+                stmt.close();
+
+            }
+
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
         }
-
     }
 }

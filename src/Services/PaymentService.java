@@ -5,6 +5,7 @@ import Entities.Merchant;
 import Entities.Payment;
 import Repositories.PaymentRepository;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -20,10 +21,11 @@ public class PaymentService {
         this.merchService = merchService;
     }
 
-    public void addPayments(List<Payment> pmnts, Merchant merch)  {
+    public void addPayments(List<Payment> pmnts, Merchant merch) {
 
-        // TODO: 2020-03-16 add transactions. fix exceptions
-        try {
+       try (Connection conn= connectionToDB.getConnection()){
+            conn.setAutoCommit(false);
+
             pmntRepo.addPayment(pmnts);
 
             double sum = 0;
@@ -36,6 +38,9 @@ public class PaymentService {
             merchService.updateMerchant(merch, sum, charge);
 
             merchService.sendFunds(merch);
+
+            conn.commit();
+
         }catch (IOException | SQLException e){
             e.printStackTrace();
         }

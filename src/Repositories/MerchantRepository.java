@@ -114,8 +114,8 @@ public class MerchantRepository {
         }
     }
 
-    // TODO: 2020-03-16 change to try with resources 
     public void sendFunds(Merchant merch) {
+
         String sqlm = "UPDATE merchant set charge = ?, needToSend = ?, lastSent = ? , sent = ? where id = ? ";
         try (Connection con = connectionToDB.getConnection();
             PreparedStatement stmt1 = con.prepareStatement(sqlm)){

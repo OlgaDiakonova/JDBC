@@ -20,7 +20,7 @@ public class CustomerRepository {
         this.connectionToDB = connectionToDB;
     }
 
-    public Customer getById(int custId) throws SQLException {
+    public Customer getById(int custId) {
 
         Customer cust = null;
         try (Connection con = connectionToDB.getConnection();
@@ -42,13 +42,13 @@ public class CustomerRepository {
 
             }
 
-        } catch (IOException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
         return cust;
     }
 
-    public List<Customer> getCustomerList() throws SQLException {
+    public List<Customer> getCustomerList() {
 
         List<Customer> custList = new ArrayList();
         Customer cust = null;
@@ -71,7 +71,7 @@ public class CustomerRepository {
                 custList.add(cust);
             }
 
-        } catch (IOException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
         return custList;

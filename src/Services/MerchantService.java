@@ -22,7 +22,7 @@ public class MerchantService {
         return merchRepository.getMerchantById(id);
     }
 
-    public List<Merchant> getMerchantList() throws SQLException {
+    public List<Merchant> getMerchantList() {
 
         return merchRepository.getMerchantList();
     }
@@ -30,14 +30,9 @@ public class MerchantService {
     public List<Merchant> getSortedMerchantList() {
 
         List<Merchant> merchList = new ArrayList<>();
-        try{
-            merchList = getMerchantList();
+        merchList = getMerchantList();
 
-            Collections.sort(merchList, (o1, o2) -> o2.getName().compareTo(o1.getName()));
-
-        } catch (SQLException ex) {
-            System.out.println("Error " + ex.getMessage());
-        }
+        Collections.sort(merchList, (o1, o2) -> o2.getName().compareTo(o1.getName()));
 
         return merchList;
 
