@@ -103,7 +103,6 @@ public class PaymentRepository {
                 stmt.setDouble(7, item.getChargePaid());
 
                 stmt.executeUpdate();
-                stmt.close();
 
             }
 

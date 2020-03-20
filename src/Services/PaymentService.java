@@ -57,5 +57,9 @@ public class PaymentService {
         return pmntRepo.getPaymentsListByCustomer(cust);
     }
 
+    public void loadPaymentToDB(List<Payment> pmntList){
+        pmntRepo.addPayment(pmntList);
+    }
+
 
 }

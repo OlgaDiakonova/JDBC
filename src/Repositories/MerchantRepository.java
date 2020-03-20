@@ -62,6 +62,40 @@ public class MerchantRepository {
         return newMerch;
     }
 
+    public Merchant getMerchantByName(String merchName)  {
+
+        Merchant newMerch = null;
+        String query = "select * from merchant where mName = ?";
+        try (Connection con = connectionToDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(query)) {
+
+            ps.setString(1, merchName);
+            ResultSet resSet = ps.executeQuery();
+            while (resSet.next()) {
+                Integer id = resSet.getInt("id");
+                String nm = resSet.getString("mName");
+                String bankName = resSet.getString("bankName");
+                String swift = resSet.getString("swift");
+                String account = resSet.getString("account");
+                Double charge = resSet.getDouble("charge");
+                Integer period = resSet.getInt("period");
+                Double minSum = resSet.getDouble("minSum");
+                Double needToSend = resSet.getDouble("needToSend");
+                Double sent = resSet.getDouble("sent");
+                LocalDate lastSent = resSet.getDate("lastSent").toLocalDate();
+
+                newMerch = new Merchant(id, nm, bankName, swift, account, charge, period, minSum, needToSend, sent, lastSent);
+            }
+
+            List<Payment> pmntList = pmntRepo.getPaymentByMerchant(newMerch);
+            newMerch.setPayments(pmntList);
+
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+        return newMerch;
+    }
+
     public List<Merchant> getMerchantList() {
 
         Merchant newMerch = null;
@@ -107,6 +141,31 @@ public class MerchantRepository {
             stmt1.setInt(3, merch.getId());
             stmt1.setDouble(1, charge);
             stmt1.setDouble(2, sum);
+            stmt1.executeUpdate();
+            stmt1.close();
+        }catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // TODO: 2020-03-19 get unique data from DB and file
+    public void loadMerchantToDB(Merchant merch) {
+        try {
+            Connection con = connectionToDB.getConnection();
+            String sqlm = "INSERT INTO merchant(name,bankName,swift,account," +
+                    "      charge,period,minSum,needToSend,sent,lastSent) values(?,?,?,?,?,?,?,?,?,?)";
+            PreparedStatement stmt1 = con.prepareStatement(sqlm);
+            stmt1.setString(1, merch.getName());
+            stmt1.setString(2, merch.getBankName());
+            stmt1.setString(3, merch.getSwift());
+            stmt1.setString(4, merch.getAccount());
+            stmt1.setDouble(5, merch.getCharge());
+            stmt1.setInt   (6, merch.getPeriod());
+            stmt1.setDouble(7, merch.getMinSum());
+            stmt1.setDouble(8, merch.getNeedToSend());
+            stmt1.setDouble(9, merch.getSent());
+            stmt1.setDate  (10, null);
+
             stmt1.executeUpdate();
             stmt1.close();
         }catch (SQLException | IOException e) {

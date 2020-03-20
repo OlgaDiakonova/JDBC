@@ -3,6 +3,7 @@ package Entities;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 public class Merchant  {
     private int id;
@@ -129,6 +130,19 @@ public class Merchant  {
 
     public void setLastSent(LocalDate lastSent) {
         this.lastSent = lastSent;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Merchant)) return false;
+        Merchant merchant = (Merchant) o;
+        return getName().equals(merchant.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName());
     }
 
     public Merchant(int id, String name, String bankName, String swift, String account, double charge, int period, double minSum, double needToSend, double sent, LocalDate lastSent) {

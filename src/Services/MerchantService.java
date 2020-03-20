@@ -22,6 +22,11 @@ public class MerchantService {
         return merchRepository.getMerchantById(id);
     }
 
+    public Merchant getMerchantByName(String name) throws SQLException {
+
+        return merchRepository.getMerchantByName(name);
+    }
+
     public List<Merchant> getMerchantList() {
 
         return merchRepository.getMerchantList();
@@ -59,6 +64,21 @@ public class MerchantService {
         }else {
             System.out.println("Total sum is less than minimum need to send sum! Money won't be sent to merchant!");
         }
+    }
+
+    public boolean ifUnique(String mName){
+
+        Merchant merch = merchRepository.getMerchantByName(mName);
+        if(merch == null){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
+    public void loadMerchantToDB(Merchant merch){
+        merchRepository.loadMerchantToDB(merch);
     }
 
 }

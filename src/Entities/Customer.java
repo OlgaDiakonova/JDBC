@@ -2,6 +2,7 @@ package Entities;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 public class Customer {
     private int id;
@@ -85,5 +86,18 @@ public class Customer {
         this.ccNo = ccNo;
         this.ccType = ccType;
         this.maturity = maturity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Customer)) return false;
+        Customer customer = (Customer) o;
+        return getName().equals(customer.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName());
     }
 }
