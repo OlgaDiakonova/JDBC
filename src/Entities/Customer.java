@@ -1,6 +1,7 @@
 package Entities;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,7 +13,22 @@ public class Customer {
     private String ccNo;
     private String ccType;
     private LocalDate maturity;
-    private List<Payment> payments;
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", email='" + email + '\'' +
+                ", ccNo='" + ccNo + '\'' +
+                ", ccType='" + ccType + '\'' +
+                ", maturity=" + maturity +
+                ", payments=" + payments.size() +
+                '}';
+    }
+
+    private List<Payment> payments = new ArrayList<>();
 
     public List<Payment> getPayments() {
         return payments;
@@ -20,6 +36,10 @@ public class Customer {
 
     public void setPayments(List<Payment> payments) {
         this.payments = payments;
+    }
+
+    public void setPayment(Payment pmnt){
+        getPayments().add(pmnt);
     }
 
     public int getId() {

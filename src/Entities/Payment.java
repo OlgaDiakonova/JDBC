@@ -67,6 +67,19 @@ public class Payment {
         this.chargePaid = chargePaid;
     }
 
+    @Override
+    public String toString() {
+        return "Payment{" +
+                "id=" + id +
+                ", dt=" + dt +
+                ", merchant=" + merchant +
+                ", cust=" + cust +
+                ", goods='" + goods + '\'' +
+                ", sumPaid=" + sumPaid +
+                ", chargePaid=" + chargePaid +
+                '}';
+    }
+
     public Payment(int id, LocalDate dt, Merchant merchant, Customer cust, String goods, double sumPaid, double chargePaid) {
         this.id = id;
         this.dt = dt;

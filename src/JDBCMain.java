@@ -1,32 +1,24 @@
 import DBConnections.DBConnection;
 import Entities.Customer;
-import Entities.Payment;
-import Entities.Merchant;
 import Repositories.CustomerRepository;
 import Repositories.MerchantRepository;
 import Repositories.PaymentRepository;
 import Services.CustomerService;
 import Services.MerchantService;
 import Services.PaymentService;
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Timestamp;
+
 
 public class JDBCMain {
 
-    public static void main(String[] args) throws IOException, SQLException {
+    public static void main(String[] args) throws SQLException {
 
         /*********************CREATING SERVICES AND REPOSITORIES**********************************/
         PaymentRepository pmntRepo = new PaymentRepository(new DBConnection());
         MerchantService newMerchService = new MerchantService(new MerchantRepository(new DBConnection(), pmntRepo));
         PaymentService pmntService = new PaymentService(new DBConnection(), pmntRepo, newMerchService);
-        CustomerService newCustService = new CustomerService(new CustomerRepository(new DBConnection()));
+        CustomerService newCustService = new CustomerService(new CustomerRepository(new DBConnection(), pmntRepo));
 //
 //        /*********************CREATING ENTITIES**********************************/
 //        Merchant merch = newMerchService.getMerchantById(2);
@@ -55,10 +47,16 @@ public class JDBCMain {
           String csvFile = "C:\\Users\\admin\\Desktop\\Merchants_2020_03_08.csv";
           String csvFile1 = "C:\\Users\\admin\\Desktop\\Customers_2020_03_08.csv";
           String csvFile2 = "C:\\Users\\admin\\Desktop\\Payments_2020_03_08.csv";
-          FileLoader newFL = new FileLoader(newMerchService, pmntService, newCustService);
+          //FileLoader newFL = new FileLoader(newMerchService, pmntService, newCustService);
           //newFL.createMerchantsFromFile(csvFile);
-          newFL.createCustomersFromFile(csvFile1);
+          //newFL.createCustomersFromFile(csvFile1);
           //newFL.createPaymentsFromFile(csvFile2);
+
+        Timestamp startDt = Timestamp.valueOf("2012-07-02 00:00:00");
+        Timestamp endDt = Timestamp.valueOf("2012-07-15 23:59:59");
+        Customer mostActiveCust = newCustService.findTheMostActive(startDt, endDt);
+        System.out.println(mostActiveCust);
+
 
     }
 

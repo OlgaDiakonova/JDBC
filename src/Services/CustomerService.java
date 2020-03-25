@@ -3,6 +3,8 @@ package Services;
 import Entities.Customer;
 import Repositories.CustomerRepository;
 
+import java.sql.Timestamp;
+import java.util.Comparator;
 import java.util.List;
 
 public class CustomerService {
@@ -35,6 +37,19 @@ public class CustomerService {
 
     public void loadCustomersToDB(List<Customer> custList){
         custRepo.loadCustomersToDB(custList);
+    }
+
+    public Customer findTheMostActive(Timestamp startDt, Timestamp endDt){
+        List<Customer> allCustomersforPeriod = custRepo.getCustomersByPeriod(startDt, endDt);
+        allCustomersforPeriod.sort(new Comparator<Customer>() {
+            @Override
+            public int compare(Customer o1, Customer o2) {
+                return o2.getPayments().size() - o1.getPayments().size();
+            }
+        });
+
+        return allCustomersforPeriod.get(0);
+
     }
 
 

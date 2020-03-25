@@ -40,7 +40,7 @@ public class PaymentRepository {
             while (resPmnt.next()) {
                 Integer id = resPmnt.getInt("id");
                 LocalDate dt = resPmnt.getDate("dt").toLocalDate();
-                Customer cust = new CustomerRepository(connectionToDB).getById(resPmnt.getInt("merchantId"));
+                Customer cust = new CustomerRepository(connectionToDB, this).getById(resPmnt.getInt("customerId"));
                 String goods = resPmnt.getString("goods");
                 Double sumPaid = resPmnt.getDouble("sumPaid");
                 Double chargePaid = resPmnt.getDouble("chargePaid");
@@ -83,6 +83,39 @@ public class PaymentRepository {
             e.printStackTrace();
         }
         return paymentList;
+    }
+
+    public List<Payment> getPaymentsByPeriod(Timestamp startDt, Timestamp endDt)  {
+
+        Payment newPayment = null;
+        List<Payment> pmntList = new ArrayList<>();
+        String query = "select * from payment where dt >= ? and dt <= ?";
+        try (Connection con = connectionToDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(query)) {
+
+            ps.setTimestamp(1, startDt);
+            ps.setTimestamp(2, endDt);
+            ResultSet resPmnt = ps.executeQuery();
+
+            while (resPmnt.next()) {
+                Integer id = resPmnt.getInt("id");
+                LocalDate dt = resPmnt.getDate("dt").toLocalDate();
+                Customer cust = new CustomerRepository(connectionToDB, this).getById(resPmnt.getInt("customerId"));
+                Merchant merch = new MerchantRepository(connectionToDB, this).getMerchantById(resPmnt.getInt("merchantId"));
+                String goods = resPmnt.getString("goods");
+                Double sumPaid = resPmnt.getDouble("sumPaid");
+                Double chargePaid = resPmnt.getDouble("chargePaid");
+
+                newPayment = new Payment(id, dt, merch, cust, goods, sumPaid, chargePaid);
+
+                pmntList.add(newPayment);
+
+            }
+
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+        return pmntList;
     }
 
     public void addPayment(List<Payment> payments) {

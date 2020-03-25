@@ -39,7 +39,7 @@ public class MerchantRepository {
                     "select * from merchant where id = " + merchId);
             while (resSet.next()) {
                 Integer id = resSet.getInt("id");
-                String nm = resSet.getString("name");
+                String nm = resSet.getString("mName");
                 LocalDate lastSent = resSet.getDate("lastSent").toLocalDate();
                 String bankName = resSet.getString("bankName");
                 String swift = resSet.getString("swift");
@@ -69,8 +69,8 @@ public class MerchantRepository {
         try (Connection con = connectionToDB.getConnection();
              PreparedStatement ps = con.prepareStatement(query)) {
 
-            ps.setString(1, merchName);
-            ResultSet resSet = ps.executeQuery();
+                ps.setString(1, merchName);
+                ResultSet resSet = ps.executeQuery();
             while (resSet.next()) {
                 Integer id = resSet.getInt("id");
                 String nm = resSet.getString("mName");
@@ -108,7 +108,7 @@ public class MerchantRepository {
                     "select * from merchant");
             while (resSet.next()) {
                 Integer id = resSet.getInt("id");
-                String nm = resSet.getString("name");
+                String nm = resSet.getString("mName");
                 LocalDate lastSent = resSet.getDate("lastSent").toLocalDate();
                 String bankName = resSet.getString("bankName");
                 String swift = resSet.getString("swift");

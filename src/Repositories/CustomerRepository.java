@@ -10,12 +10,15 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class CustomerRepository {
 
     DBConnection connectionToDB;
+    PaymentRepository pmntRepo;
 
-    public CustomerRepository(DBConnection connectionToDB) {
+    public CustomerRepository(DBConnection connectionToDB,  PaymentRepository pmntRepo) {
         this.connectionToDB = connectionToDB;
+        this.pmntRepo = pmntRepo;
     }
 
     public Customer getById(int custId) {
@@ -124,5 +127,24 @@ public class CustomerRepository {
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<Customer> getCustomersByPeriod(Timestamp startDt, Timestamp endDt){
+        List<Customer> cashCust = new ArrayList<>();
+        List<Payment> pmntList = pmntRepo.getPaymentsByPeriod(startDt, endDt);
+        for (Payment item: pmntList) {
+            if(cashCust.contains(item.getCust())){
+                Customer cust = cashCust.get(cashCust.indexOf(item.getCust()));
+                cust.setPayment(item);
+            }else{
+                Customer cust = item.getCust();
+                cust.setPayment(item);
+                cashCust.add(cust);
+            }
+
+        }
+
+        return cashCust;
+
     }
 }
