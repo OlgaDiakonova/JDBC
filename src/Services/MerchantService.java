@@ -78,7 +78,7 @@ public class MerchantService {
     }
 
     public void loadMerchantToDB(Merchant merch){
-        merchRepository.loadMerchantToDB(merch);
+        merchRepository.addToDB(merch);
     }
 
 }

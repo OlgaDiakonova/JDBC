@@ -47,6 +47,7 @@ public class FileLoader {
         this.merchService = merchService;
     }
 
+    // TODO: 2020-03-25 try with exceptions
     public void createMerchantsFromFile(String csvFile) {
         Set<Merchant> merchList = getMerchantData(csvFile);
         for (Merchant item : merchList) {
@@ -62,14 +63,15 @@ public class FileLoader {
         pmntService.loadPaymentToDB(pmntList);
     }
 
+    // TODO: 2020-03-25 read file and write to DB, if duplicate - throw exception and continue 
     public void createCustomersFromFile(String csvFile) {
-        List<Customer> custSet = new ArrayList<>(getCustomerData(csvFile));
+        List<Customer> custSet = getCustomerData(csvFile);
         List<Customer> custList = custService.getCustomerList();
         custSet.removeAll(custList);
         custService.loadCustomersToDB(custSet);
     }
 
-    public HashSet<Customer> getCustomerData(String csvFile) {
+    public List<Customer> getCustomerData(String csvFile) {
         String line = "";
         String cvsSplitBy = ",";
         String[] dataString = null;
@@ -88,7 +90,7 @@ public class FileLoader {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return custSet;
+        return new ArrayList(custSet);
     }
 
     public HashSet<Payment> getPaymentData(String csvFile) {

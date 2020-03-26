@@ -7,6 +7,7 @@ import Entities.Payment;
 import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -129,22 +130,26 @@ public class CustomerRepository {
         }
     }
 
-    public List<Customer> getCustomersByPeriod(Timestamp startDt, Timestamp endDt){
-        List<Customer> cashCust = new ArrayList<>();
+//    public List<Customer> getCustomerByPeriod(ChronoUnit period, int number) {
+//        getCustomersByPeriod(Timestamp.now() - period.number, Timestamp.now())
+//    }
+
+    public List<Customer> getCustomersByPeriod(Timestamp startDt, Timestamp endDt) {
+        List<Customer> cacheCust = new ArrayList<>();
         List<Payment> pmntList = pmntRepo.getPaymentsByPeriod(startDt, endDt);
         for (Payment item: pmntList) {
-            if(cashCust.contains(item.getCust())){
-                Customer cust = cashCust.get(cashCust.indexOf(item.getCust()));
-                cust.setPayment(item);
+            Customer cust;
+            if(cacheCust.contains(item.getCust())){
+                cust = cacheCust.get(cacheCust.indexOf(item.getCust()));
             }else{
-                Customer cust = item.getCust();
-                cust.setPayment(item);
-                cashCust.add(cust);
+                cust = item.getCust();
+                cacheCust.add(cust);
             }
 
+            cust.addPayment(item);
         }
 
-        return cashCust;
+        return cacheCust;
 
     }
 }

@@ -15,15 +15,16 @@ public class JDBCMain {
     public static void main(String[] args) throws SQLException {
 
         /*********************CREATING SERVICES AND REPOSITORIES**********************************/
-        PaymentRepository pmntRepo = new PaymentRepository(new DBConnection());
-        MerchantService newMerchService = new MerchantService(new MerchantRepository(new DBConnection(), pmntRepo));
-        PaymentService pmntService = new PaymentService(new DBConnection(), pmntRepo, newMerchService);
-        CustomerService newCustService = new CustomerService(new CustomerRepository(new DBConnection(), pmntRepo));
+        DBConnection connect = new DBConnection();
+        PaymentRepository pmntRepo = new PaymentRepository(connect);
+        MerchantService newMerchService = new MerchantService(new MerchantRepository(connect, pmntRepo));
+        PaymentService pmntService = new PaymentService(connect, pmntRepo, newMerchService);
+        CustomerService newCustService = new CustomerService(new CustomerRepository(connect, pmntRepo));
 //
 //        /*********************CREATING ENTITIES**********************************/
 //        Merchant merch = newMerchService.getMerchantById(2);
 //        Merchant merch1 = newMerchService.getMerchantById(3);
-//        Customer cust1 = new CustomerRepository(new DBConnection()).getById(3);
+//        Customer cust1 = new CustomerRepository(connect).getById(3);
 //
 //        /*********************TASK 1**********************************/
 //        double totalSum = newMerchService.getTotalMerchantPaid(merch);
@@ -52,8 +53,8 @@ public class JDBCMain {
           //newFL.createCustomersFromFile(csvFile1);
           //newFL.createPaymentsFromFile(csvFile2);
 
-        Timestamp startDt = Timestamp.valueOf("2012-07-02 00:00:00");
-        Timestamp endDt = Timestamp.valueOf("2012-07-15 23:59:59");
+        Timestamp startDt = Timestamp.valueOf("2020-03-01 00:00:00");
+        Timestamp endDt = Timestamp.valueOf("2020-03-10 23:59:59");
         Customer mostActiveCust = newCustService.findTheMostActive(startDt, endDt);
         System.out.println(mostActiveCust);
 

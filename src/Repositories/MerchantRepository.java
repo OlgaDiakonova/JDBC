@@ -149,7 +149,7 @@ public class MerchantRepository {
     }
 
     // TODO: 2020-03-19 get unique data from DB and file
-    public void loadMerchantToDB(Merchant merch) {
+    public void addToDB(Merchant merch) {
         try {
             Connection con = connectionToDB.getConnection();
             String sqlm = "INSERT INTO merchant(name,bankName,swift,account," +

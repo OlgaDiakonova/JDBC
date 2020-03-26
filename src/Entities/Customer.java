@@ -13,6 +13,7 @@ public class Customer {
     private String ccNo;
     private String ccType;
     private LocalDate maturity;
+    private List<Payment> payments = new ArrayList<>();
 
     @Override
     public String toString() {
@@ -28,8 +29,6 @@ public class Customer {
                 '}';
     }
 
-    private List<Payment> payments = new ArrayList<>();
-
     public List<Payment> getPayments() {
         return payments;
     }
@@ -38,7 +37,7 @@ public class Customer {
         this.payments = payments;
     }
 
-    public void setPayment(Payment pmnt){
+    public void addPayment(Payment pmnt){
         getPayments().add(pmnt);
     }
 

@@ -1,6 +1,7 @@
 package Entities;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -17,7 +18,7 @@ public class Merchant  {
     private double needToSend;
     private double sent;
     private LocalDate lastSent;
-    private List<Payment> payments;
+    private List<Payment> payments = new ArrayList<>();
 
     @Override
     public String toString() {
